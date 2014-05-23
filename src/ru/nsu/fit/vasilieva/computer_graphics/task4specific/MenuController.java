@@ -278,7 +278,7 @@ public class MenuController
         resultImageMatrix = filter.useFilter(workspaceImageMatrix, PICTURE_SIZE, PICTURE_SIZE);
         AbstractMatrixFilter filter2 = new StampMatrixFilter();
         resultImageMatrix = filter2.useFilter(resultImageMatrix, PICTURE_SIZE, PICTURE_SIZE);
-        resultImage = getViewImage(filter.getImage());
+        resultImage = getViewImage(filter2.getImage());
         window.setImages(image, workspaceImage, resultImage);
     }
 
@@ -290,23 +290,10 @@ public class MenuController
             return;
         }
 
-        oldResultImage = copyImage(workspaceImage);
-        oldResultImageMatrix = workspaceImageMatrix;
-
-        int[] parameters = new int[1];
-        try
-        {
-            filterConstructor = OrderedDitheringMatrixFilter.class.getConstructor(parameters.getClass());
-        } catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-
-        String [] titles = new String[3];
-        titles[0] = "Красный";
-        titles[1] = "Зеленый";
-        titles[2] = "Синий";
-        window.getParameters(3, titles, "Установите желаемое количество бит на цвет", 1);
+        AbstractMatrixFilter filter = new OrderedDitheringMatrixFilter();
+        resultImageMatrix = filter.useFilter(workspaceImageMatrix, PICTURE_SIZE, PICTURE_SIZE);
+        resultImage = getViewImage(filter.getImage());
+        window.setImages(image, workspaceImage, resultImage);
     }
 
     public void filterFloydSteinberg()

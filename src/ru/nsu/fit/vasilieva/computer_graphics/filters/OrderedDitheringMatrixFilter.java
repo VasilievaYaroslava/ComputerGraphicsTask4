@@ -1,86 +1,15 @@
 package ru.nsu.fit.vasilieva.computer_graphics.filters;
 
-import ru.nsu.fit.vasilieva.computer_graphics.filters.AbstractMatrixFilter;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class OrderedDitheringMatrixFilter extends AbstractMatrixFilter
 {
-    private int[] redColors;
-    private int[] greenColors;
-    private int[] blueColors;
-    private int redBits;
-    private int greenBits;
-    private int blueBits;
-    private int redCoefficient;
-    private int greenCoefficient;
-    private int blueCoefficient;
-
-    public OrderedDitheringMatrixFilter(int[] bits)
+    public OrderedDitheringMatrixFilter()
     {
-        this.redBits = bits[0];
-        this.greenBits = bits[1];
-        this.blueBits = bits[2];
-
-        redCoefficient = 255 / (redBits + 1);
-        greenCoefficient = 255 / (greenBits + 1);
-        blueCoefficient = 255 / (blueBits + 1);
-
-        redColors = new int[(int) Math.pow(2, redBits)];
-        int step = (int) Math.pow(2, (8 - redBits));
-        int current = 0;
-        for (int i = 0; i < (int) Math.pow(2, redBits); ++i)
-        {
-            redColors[i] = current;
-            current += step;
-        }
-
-        greenColors = new int[(int) Math.pow(2, greenBits)];
-        step = (int) Math.pow(2, (8 - greenBits));
-        current = 0;
-        for (int i = 0; i < (int) Math.pow(2, greenBits); ++i)
-        {
-            greenColors[i] = current;
-            current += step;
-        }
-
-
-        blueColors = new int[(int) Math.pow(2, blueBits)];
-        step = (int) Math.pow(2, (8 - blueBits));
-        current = 0;
-        for (int i = 0; i < (int) Math.pow(2, blueBits); ++i)
-        {
-            blueColors[i] = current;
-            current += step;
-        }
+        generateMatrix();
     }
 
-    private int findColor(int[] palette, int color)
-    {
-        if (color < 0)
-        {
-            return 0;
-        }
-
-        if (color > 255)
-        {
-            return 255;
-        }
-
-        for (int i = 0; i < palette.length; ++i)
-        {
-            if (palette[i] == color)
-            {
-                return color;
-            }
-            if (palette[i] > color)
-            {
-                return palette[i - 1];
-            }
-        }
-        return 0;
-    }
 
     @Override
     protected void generateMatrix()
@@ -170,9 +99,9 @@ public class OrderedDitheringMatrixFilter extends AbstractMatrixFilter
         {
             for (int j = 0; j < width; ++ j)
             {
-                int r = findColor(redColors, imageMatrix[i][j].getRed() + (int )matrix[i % N][j % N] * redCoefficient / 16);
-                int g = findColor(greenColors, imageMatrix[i][j].getGreen() + (int )matrix[i % N][j % N] * greenCoefficient / 16);
-                int b = findColor(blueColors, imageMatrix[i][j].getBlue() + (int )matrix[i % N][j % N] * blueCoefficient / 16);
+                int r = (int) correct(imageMatrix[i][j].getRed() + (int )matrix[i % N][j % N]);
+                int g = (int) correct(imageMatrix[i][j].getGreen() + (int )matrix[i % N][j % N]);
+                int b = (int) correct(imageMatrix[i][j].getBlue() + (int )matrix[i % N][j % N]);
                 int rgb = r * 256 * 256 + g * 256 + b;
                 newImage[i][j] = new Color(rgb);
                 image.setRGB(i, j, rgb);
